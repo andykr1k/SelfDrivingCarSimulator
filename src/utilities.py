@@ -30,12 +30,12 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
         name = "outputs/training_data/" + str(frames) + ".jpeg"
         pygame.image.save(capture_surface, name)
         file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
-        name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"
-        flipped_screen = pygame.transform.flip(capture_surface, False, True)
-        pygame.image.save(flipped_screen, name)
-        file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
-        name = "outputs/training_data/horizontally_flipped_" + str(frames) + ".jpeg"
-        flipped_screen = pygame.transform.flip(capture_surface, True, False)
-        pygame.image.save(flipped_screen, name)
-        file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
+        # name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"
+        # flipped_screen = pygame.transform.flip(capture_surface, False, True)
+        # pygame.image.save(flipped_screen, name)
+        # file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
+        # name = "outputs/training_data/horizontally_flipped_" + str(frames) + ".jpeg"
+        # flipped_screen = pygame.transform.flip(capture_surface, True, False)
+        # pygame.image.save(flipped_screen, name)
+        # file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
     file.close()

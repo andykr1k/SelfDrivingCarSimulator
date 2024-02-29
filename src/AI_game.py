@@ -26,6 +26,7 @@ MAIN_FONT = pygame.font.SysFont("comicsans", 18)
 
 FPS = 60
 
+
 class GameInfo:
     LEVELS = 10
 
@@ -59,7 +60,7 @@ class GameInfo:
 class AbstractCar:
     def __init__(self, max_vel, rotation_vel):
         self.images = self.images
-        self.max_vel = max_vel
+        self.max_vel = 2.25
         self.vel = 0
         self.rotation_vel = rotation_vel
         self.angle = 0
@@ -115,6 +116,7 @@ class PlayerCar(AbstractCar):
         self.vel = -self.vel
         self.move()
 
+
 def draw(win, images, player_car, game_info):
     for images, pos in images:
         win.blit(images, pos)
@@ -134,23 +136,25 @@ def draw(win, images, player_car, game_info):
     player_car.draw(win)
     pygame.display.update()
 
+
 def AI_move_player(player_car, window):
     player_rect = pygame.Rect(
-            player_car.x - 50, player_car.y - 50, 100, 100)
+        player_car.x - 50, player_car.y - 50, 100, 100)
     capture_surface = pygame.Surface(
-            (player_rect.width, player_rect.height))
+        (player_rect.width, player_rect.height))
     capture_surface.blit(window, (0, 0), player_rect)
 
     steering_vector = CNN_Predict(capture_surface)
 
-    if steering_vector[0]:
+    if float(steering_vector[0]) > 0.35:
         player_car.rotate(left=True)
-    if steering_vector[1]:
+    if float(steering_vector[1]) > 0.35:
         player_car.rotate(right=True)
-    if steering_vector[2]:
+    if float(steering_vector[2]) > 0.35:
         player_car.move_forward()
-    if steering_vector[3]:
+    if float(steering_vector[3]) > 0.35:
         player_car.reduce_speed()
+
 
 def handle_collision(player_car, game_info):
     if player_car.collide(TRACK_BORDER_MASK) != None:
@@ -198,7 +202,7 @@ while run:
 
     AI_move_player(player_car, WIN)
 
-    handle_collision(player_car, game_info)
+    # handle_collision(player_car, game_info)
 
     frames += 1
 
