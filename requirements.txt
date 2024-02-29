@@ -1,2 +1,7 @@
 pygame
 tensorflow
+scikit-learn
+pandas
+numpy
+Pillow
+matplotlib
