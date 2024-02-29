@@ -2,7 +2,7 @@ from tensorflow.keras import layers, models, regularizers
 from PIL import Image
 import numpy as np
 import pygame
-
+from tensorflow.keras.optimizers import Adam
 
 def CNN_Predict(frame):
     image_data = pygame.surfarray.array3d(frame)
@@ -20,11 +20,11 @@ def CNN_Predict(frame):
         layers.Flatten(),
         layers.Dense(64, activation='relu',
                      kernel_regularizer=regularizers.l2(0.001)),
-        layers.Dropout(0.75),
-        layers.Dense(5, activation='sigmoid')
+        layers.Dropout(0.6),
+        layers.Dense(4, activation='sigmoid')
     ])
-
-    model.compile(optimizer='adam', loss='mae')
+    optimizer = Adam(learning_rate=0.001)
+    model.compile(optimizer=optimizer, loss='mae')
 
     model.load_weights('./models/CNN_steering_model.h5')
 

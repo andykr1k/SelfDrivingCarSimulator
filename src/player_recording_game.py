@@ -4,7 +4,7 @@ import math
 from utilities import scale_image, blit_rotate_center, blit_text_center, record
 pygame.font.init()
 
-GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
+# GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
 TRACK = scale_image(pygame.image.load("images/track.png"), 0.9)
 
 TRACK_BORDER = scale_image(pygame.image.load("images/track-border.png"), 0.9)
@@ -183,8 +183,9 @@ def handle_collision(player_car, game_info):
 
 run = True
 clock = pygame.time.Clock()
-images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
-          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+# images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
+#           (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+images = [(TRACK, (0, 0)), (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
 player_car = PlayerCar(4, 4)
 game_info = GameInfo()
 frames = 0

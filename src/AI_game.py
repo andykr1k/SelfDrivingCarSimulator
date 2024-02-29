@@ -5,7 +5,7 @@ import math
 from utilities import scale_image, blit_rotate_center, blit_text_center
 pygame.font.init()
 
-GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
+# GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
 TRACK = scale_image(pygame.image.load("images/track.png"), 0.9)
 
 TRACK_BORDER = scale_image(pygame.image.load("images/track-border.png"), 0.9)
@@ -119,17 +119,17 @@ def draw(win, images, player_car, game_info):
     for images, pos in images:
         win.blit(images, pos)
 
-    level_text = MAIN_FONT.render(
-        f"Level {game_info.level}", 1, (255, 255, 255))
-    win.blit(level_text, (10, HEIGHT - level_text.get_height() - 70))
+    # level_text = MAIN_FONT.render(
+    #     f"Level {game_info.level}", 1, (255, 255, 255))
+    # win.blit(level_text, (10, HEIGHT - level_text.get_height() - 70))
 
-    time_text = MAIN_FONT.render(
-        f"Time: {game_info.get_level_time()}s", 1, (255, 255, 255))
-    win.blit(time_text, (10, HEIGHT - time_text.get_height() - 40))
+    # time_text = MAIN_FONT.render(
+    #     f"Time: {game_info.get_level_time()}s", 1, (255, 255, 255))
+    # win.blit(time_text, (10, HEIGHT - time_text.get_height() - 40))
 
-    vel_text = MAIN_FONT.render(
-        f"Vel: {round(player_car.vel, 1)}px/s", 1, (255, 255, 255))
-    win.blit(vel_text, (10, HEIGHT - vel_text.get_height() - 10))
+    # vel_text = MAIN_FONT.render(
+    #     f"Vel: {round(player_car.vel, 1)}px/s", 1, (255, 255, 255))
+    # win.blit(vel_text, (10, HEIGHT - vel_text.get_height() - 10))
 
     player_car.draw(win)
     pygame.display.update()
@@ -140,7 +140,7 @@ def AI_move_player(player_car, window):
     capture_surface = pygame.Surface(
             (player_rect.width, player_rect.height))
     capture_surface.blit(window, (0, 0), player_rect)
-    
+
     steering_vector = CNN_Predict(capture_surface)
 
     if steering_vector[0]:
@@ -150,8 +150,6 @@ def AI_move_player(player_car, window):
     if steering_vector[2]:
         player_car.move_forward()
     if steering_vector[3]:
-        player_car.move_backward()
-    if steering_vector[4]:
         player_car.reduce_speed()
 
 def handle_collision(player_car, game_info):
@@ -170,8 +168,10 @@ def handle_collision(player_car, game_info):
 
 run = True
 clock = pygame.time.Clock()
-images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
-          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+# images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
+#           (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+images = [(TRACK, (0, 0)), (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+
 player_car = PlayerCar(4, 4)
 game_info = GameInfo()
 frames = 0
@@ -195,7 +195,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             break
-        
+
     AI_move_player(player_car, WIN)
 
     handle_collision(player_car, game_info)
