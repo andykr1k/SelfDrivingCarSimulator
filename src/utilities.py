@@ -27,9 +27,10 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
         capture_surface = pygame.Surface(
             (player_rect.width, player_rect.height))
         capture_surface.blit(window, (0, 0), player_rect)
-        name = "outputs/training_data/" + str(frames) + ".jpeg"
-        pygame.image.save(capture_surface, name)
-        file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
+        for replication_factor in range(30):
+            name = "outputs/training_data/" + str(frames) + str(replication_factor) + ".jpeg"
+            pygame.image.save(capture_surface, name)
+            file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
         # name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"
         # flipped_screen = pygame.transform.flip(capture_surface, False, True)
         # pygame.image.save(flipped_screen, name)
