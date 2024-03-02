@@ -23,7 +23,7 @@ def CNN_Predict(frame):
     optimizer = Adam(learning_rate=0.001)
     model.compile(optimizer=optimizer, loss='mse')
 
-    model.load_weights('./models/CNN_steering_model.h5')
+    model.load_weights('models/CNN/CNN_steering_model_1.h5')
 
     test_image = image_data.reshape(1, image_height, image_width, num_channels)
     prediction = list(model.predict(test_image))

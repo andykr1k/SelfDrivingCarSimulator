@@ -1,40 +1,55 @@
-from CNN import CNN_Predict
 import pygame
 import time
 import math
 import numpy as np
-from utilities import scale_image, blit_rotate_center, blit_text_center
-from DQN import DQN
+import random
 from PIL import Image
+from funcs.utils import scale_image, blit_rotate_center, blit_text_center
+from DQN.DQN import DQN
 
 pygame.font.init()
-GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
-TRACK = scale_image(pygame.image.load("images/track.png"), 0.9)
-TRACK_BORDER = scale_image(pygame.image.load("images/track-border.png"), 0.9)
+GRASS = scale_image(pygame.image.load("./images/grass.jpg"), 2.5)
+TRACK = scale_image(pygame.image.load("./images/track.png"), 0.9)
+TRACK_BORDER = scale_image(pygame.image.load(
+    "./images/track-border.png"), 0.9)
 TRACK_BORDER_MASK = pygame.mask.from_surface(TRACK_BORDER)
-FINISH = pygame.image.load("images/finish.png")
+FINISH = pygame.image.load("./images/finish.png")
 FINISH_MASK = pygame.mask.from_surface(FINISH)
 FINISH_POSITION = (130, 250)
-RED_CAR = scale_image(pygame.image.load("images/red-car.png"), 0.55)
-GREEN_CAR = scale_image(pygame.image.load("images/green-car.png"), 0.55)
+RED_CAR = scale_image(pygame.image.load("./images/red-car.png"), 0.55)
+GREEN_CAR = scale_image(pygame.image.load("./images/green-car.png"), 0.55)
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Racing Game!")
 MAIN_FONT = pygame.font.SysFont("comicsans", 18)
 FPS = 60
 
+clock = pygame.time.Clock()
+images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
+          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
 
-class GameInfo:
-    LEVELS = 10
 
-    def __init__(self, level=1):
+class GameInfo():
+    def __init__(self, level=1, car=None):
         self.level = level
         self.started = False
         self.level_start_time = 0
+        self.action_space = 4
+        self.car = car
+        self.num_actions = 4
+
+    def step(self, action):
+        return
 
     def next_level(self):
         self.level += 1
         self.started = False
+
+    def draw(win, images, player_car):
+        for images, pos in images:
+            win.blit(images, pos)
+        player_car.draw(win)
+        pygame.display.update()
 
     def reset(self):
         self.level = 1
@@ -42,7 +57,7 @@ class GameInfo:
         self.level_start_time = 0
 
     def game_finished(self):
-        return self.level > self.LEVELS
+        return self.level > 10
 
     def start_level(self):
         self.started = True
@@ -53,13 +68,21 @@ class GameInfo:
             return 0
         return round(time.time() - self.level_start_time)
 
+    def preprocess_state(self):
+        image = self.state
+        resized_image = image.resize((84, 84))
+        grayscale_image = resized_image.convert('L')
+        grayscale_array = np.array(grayscale_image)
+        normalized_array = grayscale_array / 255.0
+        return normalized_array
 
-class AbstractCar:
-    def __init__(self, max_vel, rotation_vel):
-        self.images = self.images
-        self.max_vel = 2.25
+
+class Car:
+    def __init__(self):
+        self.images = RED_CAR
+        self.max_vel = 5
         self.vel = 0
-        self.rotation_vel = rotation_vel
+        self.rotation_vel = 0.5
         self.angle = 0
         self.x, self.y = self.START_POS
         self.acceleration = 0.1
@@ -79,6 +102,14 @@ class AbstractCar:
 
     def move_backward(self):
         self.vel = max(self.vel - self.acceleration, -self.max_vel/2)
+        self.move()
+
+    def reduce_speed(self):
+        self.vel = max(self.vel - self.acceleration / 2, 0)
+        self.move()
+
+    def bounce(self):
+        self.vel = -self.vel
         self.move()
 
     def move(self):
@@ -101,52 +132,13 @@ class AbstractCar:
         self.vel = 0
 
 
-class PlayerCar(AbstractCar):
-    images = RED_CAR
-    START_POS = (180, 200)
-
-    def reduce_speed(self):
-        self.vel = max(self.vel - self.acceleration / 2, 0)
-        self.move()
-
-    def bounce(self):
-        self.vel = -self.vel
-        self.move()
-
-
-def draw(win, images, player_car, game_info):
-    for images, pos in images:
-        win.blit(images, pos)
-    player_car.draw(win)
-    pygame.display.update()
-    pixels = pygame.image.tostring(WIN, 'RGB')
-    image_array = np.frombuffer(pixels, dtype=np.uint8)
-    image_array = image_array.reshape((HEIGHT, WIDTH, 3))
-    return image_array
-
-def draw_next_state(win, images, player_car, game_info):
-    for images, pos in images:
-        win.blit(images, pos)
-    player_car.draw(win)
-    pixels = pygame.image.tostring(WIN, 'RGB')
-    image_array = np.frombuffer(pixels, dtype=np.uint8)
-    image_array = image_array.reshape((HEIGHT, WIDTH, 3))
-    return image_array
-
-def preprocess_state(state):
-    image = Image.fromarray(state)
-    resized_image = image.resize((84, 84))
-    grayscale_image = resized_image.convert('L')
-    grayscale_array = np.array(grayscale_image)
-    normalized_array = grayscale_array / 255.0
-    return normalized_array
-
-def select_action(state, epsilon):
+def select_action(state, epsilon, model):
     if np.random.rand() < epsilon:
         return np.random.randint(4)
     else:
         q_values = model.predict(state)
         return np.argmax(q_values)
+
 
 def execute_action(action, player_car):
     if action == 0:
@@ -157,6 +149,7 @@ def execute_action(action, player_car):
         player_car.move_forward()
     elif action == 3:
         player_car.reduce_speed()
+
 
 def handle_collision(player_car, game_info):
     reward = 0
@@ -178,30 +171,15 @@ def handle_collision(player_car, game_info):
 
     return reward
 
-clock = pygame.time.Clock()
-images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
-          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
-images = [(TRACK, (0, 0)), (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
 
-pixels = pygame.image.tostring(WIN, 'RGB')
-image_array = np.frombuffer(pixels, dtype=np.uint8)
-image_array = image_array.reshape((HEIGHT, WIDTH, 3))
+car = Car()
+game_info = GameInfo(1, car)
+model = DQN(game_info.preprocess_state().shape, game_info.num_actions)
 
-input_shape = image_array.shape
-num_actions = 4
-model = DQN(input_shape, num_actions)
-
-player_car = PlayerCar(4, 4)
-game_info = GameInfo()
-frames = 0
-episodes = 50
-
-for episode in range(episodes):
+for episode in range(50):
     while not game_info.game_finished():
         reward = 0
         clock.tick(FPS)
-
-        current_game_state = draw(WIN, images, player_car, game_info)
 
         while not game_info.started:
             pygame.display.update()
@@ -216,25 +194,18 @@ for episode in range(episodes):
         if game_info.game_finished():
             reward += 10
 
-        state = preprocess_state(current_game_state)
-
-        action = select_action(state, epsilon=0.1)
-
-        execute_action(action, player_car)
-
-        reward += handle_collision(player_car, game_info)
-
-        frames += 1
-
-        next_state = preprocess_state(draw_next_state(WIN, images, player_car, game_info))
+        state = game_info.preprocess_state()
+        action = select_action(state, 0.1, model)
+        execute_action(action, car)
+        reward += handle_collision(car, game_info)
+        next_state = game_info.preprocess_state()
         done = game_info.game_finished()
 
         model.store_transition(state, action, reward, next_state, done)
         model.train()
 
     game_info.reset()
-    player_car.reset()
-    frames = 0
+    car.reset()
     reward = 0
 
 pygame.quit()

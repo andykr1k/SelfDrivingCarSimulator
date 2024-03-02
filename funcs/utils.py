@@ -17,7 +17,7 @@ def blit_text_center(win, font, text):
 
 
 def record(pygame, window, frames, left, right, forward, backward, brake, player_car):
-    file = open("outputs/training_metadata.csv", "a")
+    file = open("../outputs/training_metadata.csv", "a")
 
     if frames == 0:
         file.write("path,left,right,forward,backward,brake\n")
@@ -28,7 +28,8 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
             (player_rect.width, player_rect.height))
         capture_surface.blit(window, (0, 0), player_rect)
         for replication_factor in range(30):
-            name = "outputs/training_data/" + str(frames) + str(replication_factor) + ".jpeg"
+            name = "../outputs/training_data/" + \
+                str(frames) + str(replication_factor) + ".jpeg"
             pygame.image.save(capture_surface, name)
             file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
         # name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"

@@ -1,21 +1,22 @@
 import pygame
 import time
 import math
-from utilities import scale_image, blit_rotate_center, blit_text_center, record
+from funcs.utils import scale_image, blit_rotate_center, blit_text_center
 pygame.font.init()
 
-# GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
-TRACK = scale_image(pygame.image.load("images/track.png"), 0.9)
+GRASS = scale_image(pygame.image.load("./images/grass.jpg"), 2.5)
+TRACK = scale_image(pygame.image.load("./images/track.png"), 0.9)
 
-TRACK_BORDER = scale_image(pygame.image.load("images/track-border.png"), 0.9)
+TRACK_BORDER = scale_image(pygame.image.load(
+    "./images/track-border.png"), 0.9)
 TRACK_BORDER_MASK = pygame.mask.from_surface(TRACK_BORDER)
 
-FINISH = pygame.image.load("images/finish.png")
+FINISH = pygame.image.load("./images/finish.png")
 FINISH_MASK = pygame.mask.from_surface(FINISH)
 FINISH_POSITION = (130, 250)
 
-RED_CAR = scale_image(pygame.image.load("images/red-car.png"), 0.55)
-GREEN_CAR = scale_image(pygame.image.load("images/green-car.png"), 0.55)
+RED_CAR = scale_image(pygame.image.load("./images/red-car.png"), 0.55)
+GREEN_CAR = scale_image(pygame.image.load("./images/green-car.png"), 0.55)
 
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -167,6 +168,7 @@ def move_player(player_car):
 
     return left, right, forward, backward, brake
 
+
 def handle_collision(player_car, game_info):
     if player_car.collide(TRACK_BORDER_MASK) != None:
         player_car.bounce()
@@ -183,9 +185,8 @@ def handle_collision(player_car, game_info):
 
 run = True
 clock = pygame.time.Clock()
-# images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
-#           (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
-images = [(TRACK, (0, 0)), (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
+          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
 player_car = PlayerCar(4, 4)
 game_info = GameInfo()
 frames = 0
@@ -213,9 +214,6 @@ while run:
     left, right, forward, backward, brake = move_player(player_car)
 
     handle_collision(player_car, game_info)
-
-    record(pygame, WIN, frames, left, right,
-           forward, backward, brake, player_car)
 
     frames += 1
 
