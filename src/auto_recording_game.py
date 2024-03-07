@@ -23,7 +23,7 @@ pygame.display.set_caption("Racing Game!")
 
 MAIN_FONT = pygame.font.SysFont("comicsans", 18)
 
-PATH = [(175, 119), (110, 70), (60, 133), (75, 491), (274, 710), (400, 698), (418, 521), (507, 475), (600, 551), (613, 715), (726, 703), (734, 399), (611, 357), (409, 343), (433, 257), (697, 258), (738, 123), (581, 71), (303, 78), (275, 377), (182, 378), (178, 260)]
+PATH = [(175, 119), (150, 80), (110, 70), (70, 90), (60, 133), (55, 300), (75, 491), (170, 600), (274, 710), (400, 698), (418, 521), (507, 475), (600, 551), (613, 715), (726, 703), (734, 399), (611, 357), (409, 343), (433, 257), (697, 258), (738, 123), (581, 71), (303, 78), (275, 377), (182, 378), (178, 260)]
 
 FPS = 60
 
@@ -124,7 +124,7 @@ def draw(win, images, computer_car, game_info):
 
 class ComputerCar(AbstractCar):
     images = RED_CAR
-    START_POS = (150, 200)
+    START_POS = (170, 200)
 
     def __init__(self, max_vel, rotation_vel, path=[]):
         super().__init__(max_vel, rotation_vel)
@@ -138,7 +138,7 @@ class ComputerCar(AbstractCar):
 
     def draw(self, win):
         super().draw(win)
-        # self.draw_points(win)
+        self.draw_points(win)
 
     def calculate_angle(self):
         left = 0
@@ -239,8 +239,8 @@ while run:
 
     left, right, forward, brake = computer_car.move()
 
-    record(pygame, WIN, frames, left, right,
-           forward, 0, brake, computer_car)
+    # record(pygame, WIN, frames, left, right,
+    #        forward, 0, brake, computer_car)
 
     frames += 1
 

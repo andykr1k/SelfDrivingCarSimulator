@@ -212,7 +212,7 @@ while run:
 
     left, right, forward, backward, brake = move_player(player_car)
 
-    handle_collision(player_car, game_info)
+    # handle_collision(player_car, game_info)
 
     record(pygame, WIN, frames, left, right,
            forward, backward, brake, player_car)

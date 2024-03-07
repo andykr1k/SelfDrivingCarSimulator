@@ -2,6 +2,7 @@ from CNN import CNN_Predict
 import pygame
 import time
 import math
+from PIL import Image
 from utilities import scale_image, blit_rotate_center, blit_text_center
 pygame.font.init()
 
@@ -60,7 +61,7 @@ class GameInfo:
 class AbstractCar:
     def __init__(self, max_vel, rotation_vel):
         self.images = self.images
-        self.max_vel = 2.25
+        self.max_vel = max_vel
         self.vel = 0
         self.rotation_vel = rotation_vel
         self.angle = 0
@@ -106,7 +107,7 @@ class AbstractCar:
 
 class PlayerCar(AbstractCar):
     images = RED_CAR
-    START_POS = (180, 200)
+    START_POS = (165, 200)
 
     def reduce_speed(self):
         self.vel = max(self.vel - self.acceleration / 2, 0)
@@ -143,8 +144,11 @@ def AI_move_player(player_car, window):
     capture_surface = pygame.Surface(
         (player_rect.width, player_rect.height))
     capture_surface.blit(window, (0, 0), player_rect)
-
-    steering_vector = CNN_Predict(capture_surface)
+    scaled_surface = pygame.transform.scale(capture_surface, (64, 64))
+    pixel_data = pygame.image.tostring(scaled_surface, 'RGBA', False)
+    pil_image = Image.frombytes('RGBA', scaled_surface.get_size(), pixel_data)
+    grayscale_image = pil_image.convert('L')
+    steering_vector = CNN_Predict(grayscale_image)
 
     if float(steering_vector[0]) > 0:
         player_car.rotate(left=True)
@@ -199,7 +203,7 @@ while run:
         if event.type == pygame.QUIT:
             run = False
             break
-
+    # if frames % 10:
     AI_move_player(player_car, WIN)
 
     # handle_collision(player_car, game_info)

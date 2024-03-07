@@ -5,8 +5,9 @@ import pygame
 from tensorflow.keras.optimizers import Adam
 
 def CNN_Predict(frame):
-    image_data = pygame.surfarray.array3d(frame)
-    image_height, image_width, num_channels = image_data.shape
+    img = np.array(frame)
+    image_height, image_width = frame.size
+    num_channels = len(frame.getbands())
 
     model = models.Sequential([
         layers.Conv2D(128, (3, 3), activation='relu', input_shape=(
@@ -23,9 +24,9 @@ def CNN_Predict(frame):
     optimizer = Adam(learning_rate=0.001)
     model.compile(optimizer=optimizer, loss='mse')
 
-    model.load_weights('./models/CNN_steering_model.h5')
+    model.load_weights('./models/CNN_steering_model_gs_64.h5')
 
-    test_image = image_data.reshape(1, image_height, image_width, num_channels)
+    test_image = img.reshape(1, image_height, image_width, num_channels)
     prediction = list(model.predict(test_image))
     prediction = np.squeeze(prediction)
     steering_vector = [float(x) for x in prediction]

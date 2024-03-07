@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image
 
 def scale_image(img, factor):
     size = round(img.get_width() * factor), round(img.get_height() * factor)
@@ -23,13 +24,17 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
         file.write("path,left,right,forward,backward,brake\n")
     else:
         player_rect = pygame.Rect(
-            player_car.x - 50, player_car.y - 50, 100, 100)
+            player_car.x - 75, player_car.y - 75, 150, 150)
         capture_surface = pygame.Surface(
             (player_rect.width, player_rect.height))
         capture_surface.blit(window, (0, 0), player_rect)
-        for replication_factor in range(30):
+        scaled_surface = pygame.transform.scale(capture_surface, (64, 64))
+        pixel_data = pygame.image.tostring(scaled_surface, 'RGBA', False)
+        pil_image = Image.frombytes('RGBA', scaled_surface.get_size(), pixel_data)
+        grayscale_image = pil_image.convert('L')
+        for replication_factor in range(10):
             name = "outputs/training_data/" + str(frames) + str(replication_factor) + ".jpeg"
-            pygame.image.save(capture_surface, name)
+            grayscale_image.save(name)
             file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
         # name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"
         # flipped_screen = pygame.transform.flip(capture_surface, False, True)
