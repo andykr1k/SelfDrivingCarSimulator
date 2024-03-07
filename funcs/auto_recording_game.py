@@ -1,21 +1,21 @@
 import pygame
 import time
 import math
-from utilities import scale_image, blit_rotate_center, blit_text_center, record
+from utils import scale_image, blit_rotate_center, blit_text_center, record
 pygame.font.init()
 
-# GRASS = scale_image(pygame.image.load("images/grass.jpg"), 2.5)
-TRACK = scale_image(pygame.image.load("images/track.png"), 0.9)
+GRASS = scale_image(pygame.image.load("./images/grass.jpg"), 2.5)
+TRACK = scale_image(pygame.image.load("./images/track.png"), 0.9)
 
-TRACK_BORDER = scale_image(pygame.image.load("images/track-border.png"), 0.9)
+TRACK_BORDER = scale_image(pygame.image.load("./images/track-border.png"), 0.9)
 TRACK_BORDER_MASK = pygame.mask.from_surface(TRACK_BORDER)
 
-FINISH = pygame.image.load("images/finish.png")
+FINISH = pygame.image.load("./images/finish.png")
 FINISH_MASK = pygame.mask.from_surface(FINISH)
 FINISH_POSITION = (130, 250)
 
-RED_CAR = scale_image(pygame.image.load("images/red-car.png"), 0.55)
-GREEN_CAR = scale_image(pygame.image.load("images/green-car.png"), 0.55)
+RED_CAR = scale_image(pygame.image.load("./images/red-car.png"), 0.55)
+GREEN_CAR = scale_image(pygame.image.load("./images/green-car.png"), 0.55)
 
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -101,6 +101,7 @@ class AbstractCar:
         self.x, self.y = self.START_POS
         self.angle = 0
         self.vel = 0
+
 
 def draw(win, images, computer_car, game_info):
     for images, pos in images:
@@ -210,9 +211,8 @@ def handle_collision(player_car, game_info):
 
 run = True
 clock = pygame.time.Clock()
-# images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
-#           (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
-images = [(TRACK, (0, 0)), (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
+images = [(GRASS, (0, 0)), (TRACK, (0, 0)),
+          (FINISH, FINISH_POSITION), (TRACK_BORDER, (0, 0))]
 computer_car = ComputerCar(4, 4, PATH)
 game_info = GameInfo()
 frames = 0
