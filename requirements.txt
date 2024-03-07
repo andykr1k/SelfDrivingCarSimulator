@@ -5,3 +5,6 @@ pandas
 numpy
 Pillow
 matplotlib
+gym
+keras
+keras-rl2
