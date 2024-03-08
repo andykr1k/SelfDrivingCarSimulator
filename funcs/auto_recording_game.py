@@ -139,7 +139,7 @@ class ComputerCar(AbstractCar):
 
     def draw(self, win):
         super().draw(win)
-        self.draw_points(win)
+        # self.draw_points(win)
 
     def calculate_angle(self):
         left = 0
@@ -173,8 +173,8 @@ class ComputerCar(AbstractCar):
             forward = 1
         else:
             forward = 1
-            if abs(difference_in_angle) < 0.1:
-                brake = 1
+            # if abs(difference_in_angle) < 0.1:
+            #     brake = 1
         return left, right, forward, brake
 
     def update_path_point(self):
@@ -239,8 +239,8 @@ while run:
 
     left, right, forward, brake = computer_car.move()
 
-    # record(pygame, WIN, frames, left, right,
-    #        forward, 0, brake, computer_car)
+    record(pygame, WIN, frames, left, right,
+           forward, 0, brake, computer_car)
 
     frames += 1
 

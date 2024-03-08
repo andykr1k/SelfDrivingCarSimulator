@@ -152,13 +152,14 @@ def AI_move_player(player_car, window):
     grayscale_image = pil_image.convert('L')
     steering_vector = CNN_Predict(grayscale_image)
 
-    if float(steering_vector[0]) > 0.35:
+    threshold = 0.15
+    if float(steering_vector[0]) > threshold:
         player_car.rotate(left=True)
-    elif float(steering_vector[1]) > 0.35:
+    if float(steering_vector[1]) > threshold:
         player_car.rotate(right=True)
-    if float(steering_vector[2]) > 0.35:
+    if float(steering_vector[2]) > threshold:
         player_car.move_forward()
-    elif float(steering_vector[3]) > 0.35:
+    if float(steering_vector[3]) > threshold:
         player_car.reduce_speed()
 
 

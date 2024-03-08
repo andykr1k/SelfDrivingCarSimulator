@@ -18,7 +18,7 @@ def blit_text_center(win, font, text):
 
 
 def record(pygame, window, frames, left, right, forward, backward, brake, player_car):
-    file = open("../outputs/training_metadata.csv", "a")
+    file = open("outputs/training_metadata.csv", "a")
 
     if frames == 0:
         file.write("path,left,right,forward,backward,brake\n")
