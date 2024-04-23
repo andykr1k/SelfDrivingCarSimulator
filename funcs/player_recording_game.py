@@ -60,7 +60,7 @@ class GameInfo:
 class AbstractCar:
     def __init__(self, max_vel, rotation_vel):
         self.images = self.images
-        self.max_vel = max_vel
+        self.max_vel = 2
         self.vel = 0
         self.rotation_vel = rotation_vel
         self.angle = 0
