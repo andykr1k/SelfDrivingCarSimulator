@@ -32,7 +32,7 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
         pixel_data = pygame.image.tostring(scaled_surface, 'RGBA', False)
         pil_image = Image.frombytes('RGBA', scaled_surface.get_size(), pixel_data)
         grayscale_image = pil_image.convert('L')
-        for replication_factor in range(10):
+        for replication_factor in range(3):
             name = "outputs/training_data/" + str(frames) + str(replication_factor) + ".jpeg"
             grayscale_image.save(name)
             file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")

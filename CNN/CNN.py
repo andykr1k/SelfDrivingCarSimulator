@@ -30,7 +30,7 @@ def CNN_Predict(frame):
     model.load_weights(
         './models/CNN/CNN_steering_model_manual_gs_CMBx4_10epoch_sig_bc.h5')
 
-    optimizer = Adam(learning_rate=0.001)
+    optimizer = Adam(learning_rate=0)
 
 
     model.compile(optimizer=optimizer, loss='binary_crossentropy',
