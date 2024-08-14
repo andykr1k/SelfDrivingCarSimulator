@@ -31,10 +31,11 @@ def record(pygame, window, frames, left, right, forward, backward, brake, player
         scaled_surface = pygame.transform.scale(capture_surface, (64, 64))
         pixel_data = pygame.image.tostring(scaled_surface, 'RGBA', False)
         pil_image = Image.frombytes('RGBA', scaled_surface.get_size(), pixel_data)
-        grayscale_image = pil_image.convert('L')
+        # grayscale_image = pil_image.convert('L')
+        rgb_image = pil_image.convert('RGB')
         for replication_factor in range(3):
             name = "outputs/training_data/" + str(frames) + str(replication_factor) + ".jpeg"
-            grayscale_image.save(name)
+            rgb_image.save(name)
             file.write(name + "," + str(left) + "," + str(right) + "," + str(forward) + "," + str(backward) + "," + str(brake) + "\n")
         # name = "outputs/training_data/vertically_flipped_" + str(frames) + ".jpeg"
         # flipped_screen = pygame.transform.flip(capture_surface, False, True)

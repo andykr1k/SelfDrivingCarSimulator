@@ -149,18 +149,18 @@ def AI_move_player(player_car, window):
     scaled_surface = pygame.transform.scale(capture_surface, (64, 64))
     pixel_data = pygame.image.tostring(scaled_surface, 'RGBA', False)
     pil_image = Image.frombytes('RGBA', scaled_surface.get_size(), pixel_data)
-    grayscale_image = pil_image.convert('L')
-    steering_vector = CNN_Predict(grayscale_image)
+    rgb_image = pil_image.convert('RGB')
+    steering_vector = CNN_Predict(rgb_image)
 
     threshold = 0.5
+    if float(steering_vector[3]) > threshold:
+        player_car.reduce_speed()
     if float(steering_vector[0]) > threshold:
         player_car.rotate(left=True)
     if float(steering_vector[1]) > threshold:
         player_car.rotate(right=True)
     if float(steering_vector[2]) > threshold:
         player_car.move_forward()
-    if float(steering_vector[3]) > threshold:
-        player_car.reduce_speed()
 
 
 def handle_collision(player_car, game_info):
